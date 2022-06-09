@@ -2,18 +2,18 @@ package com.migrate.datbase.model;
 
 import java.io.Serializable;
 
-public class Note implements Serializable {
+public class NoteOldVersion implements Serializable {
     private int noteId;
     private String noteTitle;
 
-    public Note()  {
+    public NoteOldVersion()  {
     }
 
-    public Note(String noteTitle) {
+    public NoteOldVersion(String noteTitle) {
         this.noteTitle= noteTitle;
     }
 
-    public Note(int noteId, String noteTitle) {
+    public NoteOldVersion(int noteId, String noteTitle) {
         this.noteId= noteId;
         this.noteTitle= noteTitle;
     }

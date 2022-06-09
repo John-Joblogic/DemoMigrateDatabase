@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.migrate.datbase.model.Note;
+import com.migrate.datbase.model.NoteOldVersion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,21 +62,21 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void createDefaultNotesIfNeed() {
         int count = this.getNotesCount();
         if (count == 0) {
-            Note note1 = new Note("Firstly see Android ListView");
-            Note note2 = new Note("Learning Android SQLite");
-            this.addNote(note1);
-            this.addNote(note2);
+            NoteOldVersion noteOldVersion1 = new NoteOldVersion("Firstly see Android ListView");
+            NoteOldVersion noteOldVersion2 = new NoteOldVersion("Learning Android SQLite");
+            this.addNote(noteOldVersion1);
+            this.addNote(noteOldVersion2);
         }
     }
 
 
-    public void addNote(Note note) {
-        Log.i(TAG, "MyDatabaseHelper.addNote ... " + note.getNoteTitle());
+    public void addNote(NoteOldVersion noteOldVersion) {
+        Log.i(TAG, "MyDatabaseHelper.addNote ... " + noteOldVersion.getNoteTitle());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NOTE_TITLE, note.getNoteTitle());
+        values.put(COLUMN_NOTE_TITLE, noteOldVersion.getNoteTitle());
 
         // Inserting Row
         db.insert(TABLE_NOTE, null, values);
@@ -86,7 +86,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Note getNote(int id) {
+    public NoteOldVersion getNote(int id) {
         Log.i(TAG, "MyDatabaseHelper.getNote ... " + id);
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -97,15 +97,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        return new Note(Integer.parseInt(cursor.getString(0)),
+        return new NoteOldVersion(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1));
     }
 
 
-    public List<Note> getAllNotes() {
+    public List<NoteOldVersion> getAllNotes() {
         Log.i(TAG, "MyDatabaseHelper.getAllNotes ... ");
 
-        List<Note> noteList = new ArrayList<Note>();
+        List<NoteOldVersion> noteOldVersionList = new ArrayList<NoteOldVersion>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NOTE;
 
@@ -115,16 +115,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                Note note = new Note();
-                note.setNoteId(Integer.parseInt(cursor.getString(0)));
-                note.setNoteTitle(cursor.getString(1));
+                NoteOldVersion noteOldVersion = new NoteOldVersion();
+                noteOldVersion.setNoteId(Integer.parseInt(cursor.getString(0)));
+                noteOldVersion.setNoteTitle(cursor.getString(1));
                 // Adding note to list
-                noteList.add(note);
+                noteOldVersionList.add(noteOldVersion);
             } while (cursor.moveToNext());
         }
 
         // return note list
-        return noteList;
+        return noteOldVersionList;
     }
 
     public int getNotesCount() {
@@ -143,25 +143,25 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public int updateNote(Note note) {
-        Log.i(TAG, "MyDatabaseHelper.updateNote ... " + note.getNoteTitle());
+    public int updateNote(NoteOldVersion noteOldVersion) {
+        Log.i(TAG, "MyDatabaseHelper.updateNote ... " + noteOldVersion.getNoteTitle());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NOTE_TITLE, note.getNoteTitle());
+        values.put(COLUMN_NOTE_TITLE, noteOldVersion.getNoteTitle());
 
         // updating row
         return db.update(TABLE_NOTE, values, COLUMN_NOTE_ID + " = ?",
-                new String[]{String.valueOf(note.getNoteId())});
+                new String[]{String.valueOf(noteOldVersion.getNoteId())});
     }
 
-    public void deleteNote(Note note) {
-        Log.i(TAG, "MyDatabaseHelper.updateNote ... " + note.getNoteTitle());
+    public void deleteNote(NoteOldVersion noteOldVersion) {
+        Log.i(TAG, "MyDatabaseHelper.updateNote ... " + noteOldVersion.getNoteTitle());
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NOTE, COLUMN_NOTE_ID + " = ?",
-                new String[]{String.valueOf(note.getNoteId())});
+                new String[]{String.valueOf(noteOldVersion.getNoteId())});
         db.close();
     }
 
