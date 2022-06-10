@@ -24,9 +24,12 @@ public class SQLiteOpenHelperTest extends SQLiteOpenHelper {
 
     // Table name: Note.
     private static final String TABLE_NOTE = "Note";
-
     private static final String COLUMN_NOTE_ID = "Note_Id";
     private static final String COLUMN_NOTE_TITLE = "Note_Title";
+
+    private static final String TABLE_BOOK = "Book";
+    private static final String COLUMN_BOOK_ID = "Book_Id";
+    private static final String COLUMN_BOOK_TITLE = "Book_Title";
 
     public SQLiteOpenHelperTest(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,6 +45,13 @@ public class SQLiteOpenHelperTest extends SQLiteOpenHelper {
                 + ")";
         // Execute Script.
         db.execSQL(script);
+
+        // For test error when migrate miss table
+        String script2 = "CREATE TABLE " + TABLE_BOOK + "("
+                + COLUMN_BOOK_ID + " INTEGER PRIMARY KEY," + COLUMN_BOOK_TITLE + " TEXT"
+                + ")";
+
+        db.execSQL(script2);
     }
 
 
