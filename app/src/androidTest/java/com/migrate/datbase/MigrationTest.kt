@@ -15,13 +15,12 @@ import com.migrate.datbase.model.NoteOldVersion
 import com.migrate.datbase.openhelper.SQLiteOpenHelperTest
 import com.migrate.datbase.room.NoteDatabase
 import junit.framework.Assert.assertEquals
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 import java.io.IOException
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {
     // Helper for creating Room databases and migrations
@@ -48,7 +47,7 @@ class MigrationTest {
 
     @Test
     @Throws(IOException::class)
-    fun migrationFrom1To2_containsCorrectData() {
+    fun testFirst_migrationFrom1To2_containsCorrectData() {
         // Create the database with the initial version 1 schema and insert a note
         mSqliteTestDbHelper?.addNote(noteOldVerSion)
 
@@ -65,7 +64,7 @@ class MigrationTest {
 
     @Test
     @Throws(IOException::class)
-    fun startInVersion2_containsCorrectData() {
+    fun testSecond_startInVersion2_containsCorrectData() {
         // Create the database with version 2
         mMigrationTestHelper.createDatabase(
             TEST_DB, 2
@@ -85,7 +84,7 @@ class MigrationTest {
 
     @Test
     @Throws(IOException::class)
-    fun startInVersion2_insertData() {
+    fun testThird_startInVersion2_insertData() {
 
         // open the db with Room
         val noteDatabase: NoteDatabase = migratedRoomDatabase
