@@ -11,43 +11,57 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.migrate.datbase.model.NoteNewVersion
 import com.migrate.datbase.model.NoteOldVersion
-import com.migrate.datbase.openhelper.MyDatabaseHelper
-import com.migrate.datbase.openhelper.NoteDatabase
+import com.migrate.datbase.openhelper.SQLiteOpenHelperTest
+import com.migrate.datbase.room.NoteDatabase
 
 
 class MainActivity : AppCompatActivity() {
-    val oldDatabase = MyDatabaseHelper(this)
-
-    //    val newDatabase: NoteDatabase? = NoteDatabase.getInstance(this)
+    val oldDatabase = SQLiteOpenHelperTest(this)
     var newDatabase: NoteDatabase? = null
     var listOldAdapter: ArrayAdapter<NoteOldVersion>? = null
     var listNewAdapter: ArrayAdapter<NoteNewVersion>? = null
+    var edtNoteTitle: EditText? = null
+    var edtNoteDes: EditText? = null
+    var listView: ListView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val edtNoteTitle = findViewById<EditText>(R.id.edtNoteTitle)
-        val edtNoteDes = findViewById<EditText>(R.id.edtNoteDes)
-        val listView = findViewById<ListView>(R.id.listView)
+        edtNoteTitle = findViewById(R.id.edtNoteTitle)
+        edtNoteDes = findViewById(R.id.edtNoteDes)
+        listView = findViewById(R.id.listView)
 
         // Handle old database
-//        oldDatabase.createDefaultNotesIfNeed()
-//
-//        listOldAdapter = ArrayAdapter<NoteOldVersion>(
-//            this,
-//            android.R.layout.simple_list_item_1, android.R.id.text1, oldDatabase.allNotes
-//        )
-//
-//        listView?.adapter = listOldAdapter
-//        registerForContextMenu(listView)
-//
-//
-//        findViewById<Button>(R.id.btnSave).setOnClickListener {
-//            oldDatabase.addNote(NoteOldVersion(edtNoteTitle.text.toString()))
-//        }
+        handleDatabaseOldVersion()
 
 
         // Handle new database
+//        handleDatabaseNewVersion()
+    }
+
+    private fun handleDatabaseOldVersion() {
+        oldDatabase.createDefaultNotesIfNeed()
+
+        listOldAdapter = ArrayAdapter<NoteOldVersion>(
+            this,
+            android.R.layout.simple_list_item_1, android.R.id.text1, oldDatabase.allNotes
+        )
+
+        listView?.adapter = listOldAdapter
+        registerForContextMenu(listView)
+
+
+        findViewById<Button>(R.id.btnSave).setOnClickListener {
+            oldDatabase.addNote(NoteOldVersion(edtNoteTitle?.text.toString()))
+            listOldAdapter!!.apply {
+                clear()
+                addAll(oldDatabase.allNotes)
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun handleDatabaseNewVersion() {
         newDatabase = Room.databaseBuilder(this, NoteDatabase::class.java, NoteDatabase.DB_NAME)
             .allowMainThreadQueries()
             .addMigrations(MIGRATION_1_2)
@@ -66,10 +80,16 @@ class MainActivity : AppCompatActivity() {
             newDatabase?.getNoteDao()?.insertNote(
                 NoteNewVersion(
                     null,
-                    edtNoteTitle.text.toString(),
-                    edtNoteDes.text.toString()
+                    edtNoteTitle?.text.toString(),
+                    edtNoteDes?.text.toString()
                 )
             )
+
+            listNewAdapter!!.apply {
+                clear()
+                addAll(newDatabase?.getNoteDao()?.getNotes()!!)
+                notifyDataSetChanged()
+            }
         }
     }
 

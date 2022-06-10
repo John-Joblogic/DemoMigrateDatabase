@@ -12,7 +12,7 @@ import com.migrate.datbase.model.NoteOldVersion;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyDatabaseHelper extends SQLiteOpenHelper {
+public class SQLiteOpenHelperTest extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLite";
 
@@ -28,7 +28,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NOTE_ID = "Note_Id";
     private static final String COLUMN_NOTE_TITLE = "Note_Title";
 
-    public MyDatabaseHelper(Context context) {
+    public SQLiteOpenHelperTest(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
